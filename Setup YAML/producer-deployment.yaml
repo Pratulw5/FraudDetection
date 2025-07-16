@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: csv-producer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: csv-producer
+  template:
+    metadata:
+      labels:
+        app: csv-producer
+    spec:
+      containers:
+      - name: csv-producer
+        image: pratulw5/frauddetection-txnsimulator:dev 
+        env:
+        - name: KAFKA_BROKER
+          value: "kafka:9092"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: csv-producer
+spec:
+  selector:
+    app: csv-producer
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080

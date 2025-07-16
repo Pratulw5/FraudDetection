@@ -1,0 +1,11 @@
+# Even if the Kafka Pod is deleted and recreated, Kubernetes reattaches the same volume, keeping the data safe.
+apiVersion: v1               # Version of Kubernetes API.
+kind: PersistentVolumeClaim  # Declares a claim to request storage.
+metadata:
+  name: kafka-pvc            # Name of the PVC, referenced in the StatefulSet.
+spec:
+  accessModes:
+    - ReadWriteOnce          # Can be mounted as read-write by a single node.
+  resources:
+    requests:
+      storage: 1Gi           # Requests 1Gi of storage.

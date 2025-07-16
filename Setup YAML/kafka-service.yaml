@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka
+  labels:
+    app: kafka
+spec:
+  selector:
+    app: kafka             # Connects to Pods with app=kafka.
+  ports:
+  - port: 9092             # Exposes port 9092 (Kafka broker port).
+    targetPort: 9092
+  type: ClusterIP          # Default service type (internal access only inside the kubernetes cluster).
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-headless
+  labels:
+    app: kafka
+spec:
+  clusterIP: None          # Headless service (required for StatefulSet DNS mapping).
+  selector:
+    app: kafka
+  ports:
+  - name: broker
+    port: 9092
+    targetPort: 9092
+  - name: controller
+    port: 9093
+    targetPort: 9093

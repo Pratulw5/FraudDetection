@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kafka-create-topics
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: create-topics
+          image: bitnami/kafka:3.7.0
+          command:
+            - /bin/bash
+            - -c
+            - |
+              echo "Creating topic: raw-transactions"
+              kafka-topics.sh \
+                --create \
+                --topic raw-transactions \
+                --partitions 1 \
+                --replication-factor 1 \
+                --if-not-exists \
+                --bootstrap-server kafka:9092
+
+              echo "Creating topic: high_value_transactions"
+              kafka-topics.sh \
+                --create \
+                --topic high-value-transactions \
+                --partitions 1 \
+                --replication-factor 1 \
+                --if-not-exists \
+                --bootstrap-server kafka:9092
