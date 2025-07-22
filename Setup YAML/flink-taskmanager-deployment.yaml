@@ -22,7 +22,7 @@ metadata:
     app: flink
     component: taskmanager
 spec:
-  replicas: 1  # You can scale this based on your resource requirements
+  replicas: 2  # You can scale this based on your resource requirements
   selector:
     matchLabels:
       app: flink
@@ -36,10 +36,22 @@ spec:
       containers:
         - name: taskmanager
           image: pratulw5/frauddetection-flink:dev  
+          imagePullPolicy: "Always"
           ports:
             - containerPort: 6121  # Flink TaskManager RPC
           env:
             - name: JOB_MANAGER_RPC_ADDRESS
               value: "flink-jobmanager"
+            - name: akka.frame-size
+              value: "104857600"  # 100 MB frame size
+            - name: akka.ask.timeout
+              value: "60000"  # Optionally increase timeout
+            # Increase frame size settings
+            - name: FLINK_AKKA_FRAME_SIZE
+              value: "104857600"  # 100 MB
+            - name: FLINK_TASKMANAGER_NETTY_MAX_FRAME_SIZE
+              value: "52428800"  # 50 MB
+            - name: FLINK_AKKA_ASK_TIMEOUT
+              value: "60000"  # 60 seconds timeout
           command: ["/docker-entrypoint.sh"]
           args: ["taskmanager"]

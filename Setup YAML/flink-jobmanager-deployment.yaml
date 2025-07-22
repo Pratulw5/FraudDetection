@@ -43,6 +43,7 @@ spec:
       containers:
         - name: jobmanager
           image: pratulw5/frauddetection-flink:dev
+          imagePullPolicy: "Always"
           ports:
             - containerPort: 8081  # Flink Web UI
             - containerPort: 6123  # Flink JobManager RPC
@@ -55,5 +56,24 @@ spec:
               value: "8081"
             - name: JOB_MANAGER_BLOB_SERVER_PORT
               value: "6124"  # Set the BlobServer port
+            - name: akka.frame-size
+              value: "104857600"  # 100 MB frame size
+            - name: akka.ask.timeout
+              value: "60000"  # Optionally increase timeout
+            # Increase frame size settings
+            - name: FLINK_AKKA_FRAME_SIZE
+              value: "104857600"  # 100 MB
+            - name: FLINK_TASKMANAGER_NETTY_MAX_FRAME_SIZE
+              value: "52428800"  # 50 MB
+            - name: FLINK_AKKA_ASK_TIMEOUT
+              value: "60000"  # 60 seconds timeout
+            - name: FLINK_PROPERTIES
+              value: |
+                jobmanager.rpc.address: flink-jobmanager
+                jobmanager.rpc.port: 6123
+                blob.server.port: 6124
+                rest.port: 8081
+                taskmanager.numberOfTaskSlots: 2
+                akka.framesize: 104857600b
           command: ["/docker-entrypoint.sh"]
           args: ["jobmanager"]

@@ -30,3 +30,19 @@ spec:
                 --replication-factor 1 \
                 --if-not-exists \
                 --bootstrap-server kafka:9092
+              echo "Creating topic: MLdata"
+              kafka-topics.sh \
+                --create \
+                --topic MLdata \
+                --partitions 1 \
+                --replication-factor 1 \
+                --if-not-exists \
+                --bootstrap-server kafka:9092
+              echo "Creating topic: rule-checked-txn"
+              kafka-topics.sh \
+                --create \
+                --topic rule-checked-txn \
+                --partitions 1 \
+                --replication-factor 1 \
+                --if-not-exists \
+                --bootstrap-server kafka:9092

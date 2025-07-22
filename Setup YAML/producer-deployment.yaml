@@ -15,6 +15,7 @@ spec:
       containers:
       - name: csv-producer
         image: pratulw5/frauddetection-txnsimulator:dev 
+        imagePullPolicy: "Always"
         env:
         - name: KAFKA_BROKER
           value: "kafka:9092"
