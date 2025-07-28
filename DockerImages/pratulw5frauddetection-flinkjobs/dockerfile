@@ -1,0 +1,31 @@
+FROM flink:1.18
+
+ENV FLINK_CONNECTOR_KAFKA_VERSION=3.2.0-1.18
+ENV KAFKA_CLIENT_VERSION=3.6.1
+
+# Install Python, pip, and required libraries
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends python3 python3-pip && \
+    ln -s /usr/bin/python3 /usr/bin/python && \
+    pip3 install --no-cache-dir --upgrade pip && \
+    pip3 install --no-cache-dir \
+        pyflink \
+        river \
+        redis \
+        psycopg2-binary \
+        google-cloud-core \
+        protobuf
+RUN apt-get update && apt-get install -y zip       
+
+# Add Flink Kafka connector and Kafka client jars
+RUN wget https://repo1.maven.org/maven2/org/apache/flink/flink-connector-kafka/${FLINK_CONNECTOR_KAFKA_VERSION}/flink-connector-kafka-${FLINK_CONNECTOR_KAFKA_VERSION}.jar \
+    -O /opt/flink/lib/flink-connector-kafka-${FLINK_CONNECTOR_KAFKA_VERSION}.jar && \
+    wget https://repo1.maven.org/maven2/org/apache/kafka/kafka-clients/${KAFKA_CLIENT_VERSION}/kafka-clients-${KAFKA_CLIENT_VERSION}.jar \
+    -O /opt/flink/lib/kafka-clients-${KAFKA_CLIENT_VERSION}.jar
+
+# Copy jobs and set working directory
+COPY Jobs /opt/Jobs
+WORKDIR /opt/Jobs
+
+# docker build -t pratulw5/frauddetection-flinkjobs:dev .
+# docker push pratulw5/frauddetection-flinkjobs:dev
